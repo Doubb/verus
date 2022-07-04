@@ -60,7 +60,8 @@
 #define  MTU 1450
 #define  VERUS_M_DECREASE 0.7
 #define  CURVE_TIMER 1e6  // timer in microseconds, how often do we update the curve
-#define  EPOCH 5e3 // Verus epoch in microseconds
+#define  EPOCH 1e1 // JJW: Verus epoce for 100ms
+//#define  EPOCH 5e3 // Verus epoch in microseconds
 #define  DELTA1 1.0 // delta decrease
 #define  DELTA2 2.0 // delta increase
 #define  VERUS_R 6.0 // verus ratio of Dmax/Dmin

@@ -843,6 +843,19 @@ int main(int argc,char **argv) {
 
     std::cout << "Client " << port << " is connected\n";
 
+    // JJW: verus protocol with Transformer prediction
+    std::string filePath = "exp_thro.txt";
+    std::string line;
+    std::ifstream openFile(filePath.data());
+    getline(openFile, line);
+    float cap1 = std::stof(line);
+
+    getline(openFile, line);
+    float cap2 = std::stof(line);
+
+    float delta_cap = cap2 - cap1;
+    std::cout << delta_cap << std::endl;
+
     while (relativeTime <= timeToRun) {
 
         gettimeofday(&currentTime,NULL);
@@ -875,6 +888,7 @@ int main(int argc,char **argv) {
             deltaDBar = dMax - dMaxLast;
 
             // normal verus protocol
+	    /*
             if (dMaxLast/dMin > VERUS_R) {
                 if (!exitSlowStart) {
                     dEst = fmax (dMin, (dEst-DELTA2));
@@ -890,6 +904,35 @@ int main(int argc,char **argv) {
                 dEst = fmax (dMin, (dEst-DELTA1));
             else
                 dEst += DELTA2;
+	    */
+
+	    // JJW: verus protocol with Transformer prediction
+	    if (dMaxLast/dMin > VERUS_R) {
+		if (!exitSlowStart) {
+		    dEst = fmax(dMin, (dEst-DELTA2));
+
+		    if (dEst == dMin && wCrt < 2) {
+			dMin += 10;
+		    }
+		    else if (dEst == dMin)
+			dMinStop = true;
+		}
+	    }
+
+	    // Utilize prediction values
+	    else if (delta_cap < 0) {
+		dEst = fmax(dMin, (dEst - DELTA1));
+	    }
+
+	    else {
+		dEst += DELTA2;
+	    }
+
+	    cap1 = cap2;
+    	    getline(openFile, line);
+    	    cap2 = std::stof(line);
+	    delta_cap = cap2 - cap1;
+    	    std::cout << delta_cap << std::endl;
 
             wBarTemp = calcDelayCurve (dEst);
 
